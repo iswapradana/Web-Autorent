@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoRent — Sistem Rental Mobil</title>
+
+  <!-- Google Fonts (External Library) -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet Eksternal -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 
+     HALAMAN LOGIN (ditampilkan pertama kali)
+      -->
+<div id="login-screen">
+  <div class="login-bg">
+    <div class="login-orb login-orb-1"></div>
+    <div class="login-orb login-orb-2"></div>
+    <div class="login-orb login-orb-3"></div>
+  </div>
+
+  <div class="login-container">
+
+    <!-- Sisi Kiri: Branding -->
+    <div class="login-brand">
+      <div class="login-logo">AUTO<span>RENT</span></div>
+      <h2 class="login-tagline">Sistem Manajemen<br>Rental Mobil Digital</h2>
+      <p class="login-desc">Kelola armada, transaksi, dan pelanggan Anda dalam satu platform yang modern dan efisien.</p>
+      <div class="login-features">
+        <div class="login-feat"><span class="login-feat-icon">🚗</span> Manajemen Armada</div>
+        <div class="login-feat"><span class="login-feat-icon">📋</span> Transaksi Real-time</div>
+        <div class="login-feat"><span class="login-feat-icon">📊</span> Laporan Keuangan</div>
+        <div class="login-feat"><span class="login-feat-icon">👥</span> Data Pelanggan</div>
+      </div>
+    </div>
+
+    <!-- Sisi Kanan: Form Login -->
+    <div class="login-form-wrap">
+      <div class="login-card">
+        <div class="login-card-header">
+          <div class="login-card-title">Selamat Datang</div>
+          <div class="login-card-sub">Masuk ke akun AutoRent Anda</div>
+        </div>
+
+        <div id="login-error" class="login-error" style="display:none"></div>
+
+        <div class="login-field">
+          <label class="login-label">Username</label>
+          <div class="login-input-wrap">
+            <span class="login-input-icon">👤</span>
+            <input id="login-username" class="login-input" type="text"
+                   placeholder="Masukkan username" onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label class="login-label">Password</label>
+          <div class="login-input-wrap">
+            <span class="login-input-icon">🔒</span>
+            <input id="login-password" class="login-input" type="password"
+                   placeholder="Masukkan password" onkeydown="if(event.key==='Enter')doLogin()">
+            <button class="login-toggle-pw" onclick="togglePassword()" id="btn-toggle-pw">👁</button>
+          </div>
+        </div>
+
+        <div class="login-row">
+          <label class="login-remember">
+            <input type="checkbox" id="login-remember"> Ingat saya
+          </label>
+          <span class="login-forgot" onclick="showForgot()">Lupa password?</span>
+        </div>
+
+        <button class="login-btn" onclick="doLogin()" id="login-submit">
+          <span id="login-btn-text">Masuk</span>
+          <span id="login-spinner" style="display:none">⏳</span>
+        </button>
+
+        <div class="login-divider"><span>Akun Demo</span></div>
+
+        <div class="login-demo-accounts">
+          <div class="login-demo-card" onclick="fillDemo('admin','admin123')">
+            <div class="login-demo-role">👑 Admin</div>
+            <div class="login-demo-cred">admin / admin123</div>
+          </div>
+          <div class="login-demo-card" onclick="fillDemo('operator','op123')">
+            <div class="login-demo-role">🔧 Operator</div>
+            <div class="login-demo-cred">operator / op123</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 
+     NAVIGASI (tersembunyi saat login)
+ -->
+<nav id="main-nav" style="display:none">
+  <div class="logo">AUTO<span>RENT</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active"  onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-tab"         onclick="showPage('mobil')">Armada</button>
+    <button class="nav-tab"         onclick="showPage('sewa')">Sewa Mobil</button>
+    <button class="nav-tab"         onclick="showPage('transaksi')">Transaksi</button>
+    <button class="nav-tab"         onclick="showPage('pelanggan')">Pelanggan</button>
+    <button class="nav-tab"         onclick="showPage('laporan')">Laporan</button>
+  </div>
+  <div class="nav-user" id="nav-user-info">
+    <span class="nav-user-name" id="nav-username-label">—</span>
+    <button class="btn-logout" onclick="doLogout()">Keluar</button>
+  </div>
+</nav>
+
+<!-- 
+     KONTEN UTAMA (tersembunyi saat login)
+-->
+<div id="main-content" style="display:none">
+
+<!-- 
+     DASHBOARD
+-->
+<div class="page active" id="page-dashboard">
+
+  <!-- Hero Banner -->
+  <div class="hero">
+    <h1>SISTEM RENTAL<br><span>MOBIL DIGITAL</span></h1>
+    <p>Platform manajemen rental mobil modern — kelola armada, transaksi &amp; pelanggan dalam satu sistem.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num"   id="stat-total-mobil">0</div>
+        <div class="stat-label">Total Armada</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"   id="stat-tersedia">0</div>
+        <div class="stat-label">Tersedia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"   id="stat-disewa">0</div>
+        <div class="stat-label">Sedang Disewa</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"   id="stat-pelanggan">0</div>
+        <div class="stat-label">Pelanggan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="sum-label">Total Pendapatan</div>
+      <div class="sum-value accent" id="sum-pendapatan">Rp 0</div>
+    </div>
+    <div class="summary-card">
+      <div class="sum-label">Transaksi Aktif</div>
+      <div class="sum-value success" id="sum-aktif">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="sum-label">Transaksi Selesai</div>
+      <div class="sum-value" id="sum-selesai">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="sum-label">Terlambat</div>
+      <div class="sum-value danger" id="sum-terlambat">0</div>
+    </div>
+  </div>
+
+  <!-- Daftar Armada -->
+  <div class="section-title">Armada <span>Terbaru</span></div>
+  <div class="grid" id="dashboard-cars"></div>
+
+</div>
+
+<!-- 
+    ARMADA 
+ -->
+<div class="page" id="page-mobil">
+
+  <div class="section-title">Kelola <span>Armada</span></div>
+
+  <!-- Form Tambah Kendaraan -->
+  <div class="panel">
+    <div class="panel-title">➕ Tambah Kendaraan Baru</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama Mobil</label>
+        <input id="m-nama" placeholder="e.g. Toyota Avanza">
+      </div>
+      <div class="form-group">
+        <label>Jenis / Kategori</label>
+        <select id="m-jenis">
+          <option value="Sedan">Sedan</option>
+          <option value="SUV">SUV</option>
+          <option value="MPV" selected>MPV</option>
+          <option value="Hatchback">Hatchback</option>
+          <option value="Pickup">Pickup</option>
+          <option value="Mewah">Mewah</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Plat Nomor</label>
+        <input id="m-plat" placeholder="B 1234 XX">
+      </div>
+      <div class="form-group">
+        <label>Harga / Hari (Rp)</label>
+        <input id="m-harga" type="number" placeholder="350000">
+      </div>
+      <div class="form-group">
+        <label>Tahun</label>
+        <input id="m-tahun" type="number" placeholder="2023">
+      </div>
+      <div class="form-group">
+        <label>Warna</label>
+        <input id="m-warna" placeholder="Putih">
+      </div>
+      <div class="form-group">
+        <label>Kapasitas (orang)</label>
+        <input id="m-kapasitas" type="number" placeholder="7">
+      </div>
+      <div class="form-group">
+        <label>Transmisi</label>
+        <select id="m-transmisi">
+          <option value="Manual">Manual</option>
+          <option value="Otomatis" selected>Otomatis</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex-row mt">
+      <button class="btn btn-primary"   onclick="tambahMobil()">Tambah Kendaraan</button>
+      <button class="btn btn-secondary" onclick="resetFormMobil()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Tabel Daftar Kendaraan -->
+  <div class="section-title">Daftar <span>Kendaraan</span></div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table id="tbl-mobil">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Plat</th>
+            <th>Jenis</th>
+            <th>Tahun</th>
+            <th>Harga/Hari</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-mobil"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- 
+    fORM SEWA MOBIL
+-->
+<div class="page" id="page-sewa">
+
+  <div class="section-title">Form <span>Penyewaan</span></div>
+
+  <!-- Data Penyewa -->
+  <div class="panel">
+    <div class="panel-title">📋 Data Penyewa</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input id="s-nama" placeholder="Nama penyewa">
+      </div>
+      <div class="form-group">
+        <label>No. KTP / SIM</label>
+        <input id="s-ktp" placeholder="1234567890">
+      </div>
+      <div class="form-group">
+        <label>No. Telepon</label>
+        <input id="s-telp" placeholder="08xxxxxxxxxx">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="s-email" type="email" placeholder="email@domain.com">
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Sewa -->
+  <div class="panel">
+    <div class="panel-title">🚗 Detail Sewa</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Pilih Kendaraan</label>
+        <select id="s-mobil" onchange="hitungHarga()"></select>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Mulai</label>
+        <input id="s-tgl-mulai" type="date" onchange="hitungHarga()">
+      </div>
+      <div class="form-group">
+        <label>Tanggal Selesai</label>
+        <input id="s-tgl-selesai" type="date" onchange="hitungHarga()">
+      </div>
+      <div class="form-group">
+        <label>Tipe Sewa</label>
+        <select id="s-tipe" onchange="hitungHarga()">
+          <option value="harian">Harian</option>
+          <option value="mingguan">Mingguan (diskon 10%)</option>
+          <option value="bulanan">Bulanan (diskon 20%)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Supir</label>
+        <select id="s-supir" onchange="hitungHarga()">
+          <option value="tanpa">Tanpa Supir</option>
+          <option value="dengan">Dengan Supir (+Rp 150.000/hari)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Catatan</label>
+        <input id="s-catatan" placeholder="Catatan tambahan...">
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Kalkulasi (muncul otomatis) -->
+  <div class="panel" id="panel-kalkulasi" style="display:none">
+    <div class="panel-title">💰 Kalkulasi Biaya</div>
+    <div class="receipt" id="receipt-content"></div>
+    <div class="flex-row mt">
+      <button class="btn btn-primary"   onclick="prosesTransaksi()">✅ Proses Transaksi</button>
+      <button class="btn btn-secondary" onclick="resetFormSewa()">Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 
+    TRANSAKSI
+ -->
+<div class="page" id="page-transaksi">
+
+  <div class="section-title">Riwayat <span>Transaksi</span></div>
+
+  <!-- Filter -->
+  <div class="flex-row" style="margin-bottom:1.2rem">
+    <input  id="filter-transaksi" placeholder="🔍 Cari transaksi..."
+            style="width:240px" oninput="renderTransaksi()">
+    <select id="filter-status" onchange="renderTransaksi()" style="width:150px">
+      <option value="">Semua Status</option>
+      <option value="Aktif">Aktif</option>
+      <option value="Selesai">Selesai</option>
+      <option value="Terlambat">Terlambat</option>
+    </select>
+  </div>
+
+  <!-- Tabel Transaksi -->
+  <div class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pelanggan</th>
+            <th>Kendaraan</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-transaksi"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- 
+    PELANGGAN
+-->
+<div class="page" id="page-pelanggan">
+
+  <div class="section-title">Data <span>Pelanggan</span></div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>KTP/SIM</th>
+            <th>Telepon</th>
+            <th>Email</th>
+            <th>Total Sewa</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-pelanggan"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- 
+    LAPORAN
+-->
+<div class="page" id="page-laporan">
+
+  <div class="section-title">Laporan <span>Keuangan</span></div>
+
+  <!-- Summary Laporan -->
+  <div class="summary-grid" id="laporan-summary"></div>
+
+  <!-- Rekap Per Jenis -->
+  <div class="panel">
+    <div class="panel-title">📊 Rekap Per Jenis Kendaraan</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Jenis</th>
+            <th>Total Unit</th>
+            <th>Total Disewa</th>
+            <th>Pendapatan</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-laporan-jenis"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ekspor Data -->
+  <div class="panel">
+    <div class="panel-title">📁 Ekspor Data (Simulasi File)</div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">
+      Sistem mencatat semua transaksi ke localStorage sebagai simulasi basis data.
+    </p>
+    <div class="flex-row">
+      <button class="btn btn-secondary"  onclick="eksporJSON()">⬇ Ekspor JSON</button>
+      <button class="btn btn-secondary"  onclick="eksporCSV()">⬇ Ekspor CSV</button>
+      <button class="btn btn-danger btn-sm" onclick="resetData()">🗑 Reset Semua Data</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 
+    Detail Kendaraan
+-->
+<div class="modal-overlay" id="modal-mobil">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-car-title">Detail Kendaraan</div>
+      <button class="modal-close" onclick="closeModal('modal-mobil')">✕</button>
+    </div>
+    <div id="modal-car-body"></div>
+  </div>
+</div>
+
+<!-- 
+     Detail Transaksi
+-->
+<div class="modal-overlay" id="modal-transaksi">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Detail Transaksi</div>
+      <button class="modal-close" onclick="closeModal('modal-transaksi')">✕</button>
+    </div>
+    <div id="modal-trx-body"></div>
+  </div>
+</div>
+
+<!-- Toast Notifikasi -->
+</div><!-- /main-content -->
+
+<div id="toast"></div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
